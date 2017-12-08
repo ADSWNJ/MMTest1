@@ -23,6 +23,7 @@ MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) {
 	TestDblL = 111.111;
 	TestVecL = _V(1.1,1.1,1.1);
 
+
 	sc = new MMTest_Common;
 	sc->name = "TEST NAME X1";
 	strncpy(exps.safeName, sc->name.c_str(), 32);
