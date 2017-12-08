@@ -114,3 +114,24 @@ void MMTest1::Button_SSN() {
   return;
 };
 
+
+
+
+// GPA = Test Get Proc Address
+void MMTest1::Button_GPA() {
+
+  HMODULE hMMT2 = GetModuleHandleA(".\\Modules\\Plugin\\MMTest2.dll");
+  if (hMMT2 == nullptr) return;
+
+  FARPROC hMGE = GetProcAddress(hMMT2, "MyGlobalEntry");
+
+  typedef bool(*RMTCALL)();
+
+  RMTCALL rc = (RMTCALL)(hMGE);
+
+  (*rc)();
+
+  return;
+
+
+};

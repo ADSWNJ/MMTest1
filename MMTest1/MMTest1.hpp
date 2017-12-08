@@ -38,6 +38,7 @@ public:
   void Button_GDR();
   void Button_GVR();
   void Button_SSN();
+  void Button_GPA();
 
   const char* GetModuleName() const;
 

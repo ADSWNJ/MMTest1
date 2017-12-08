@@ -26,7 +26,8 @@ MMTest1_Buttons::MMTest1_Buttons()
       {"Get Int", 0, '1'},
       {"Get Double", 0, '2'},
       {"Get Vec", 0, '3'},
-      {"Set Str Name", 0, 'S'}
+      {"Set Str Name", 0, 'S'},
+      {"Test GetProcAddr", 0, 'G'}
     };
 
     RegisterPage(mnu0, sizeof(mnu0) / sizeof(MFDBUTTONMENU));
@@ -38,6 +39,7 @@ MMTest1_Buttons::MMTest1_Buttons()
     RegisterFunction("GDR", OAPI_KEY_2, &MMTest1::Button_GDR);
     RegisterFunction("GVR", OAPI_KEY_3, &MMTest1::Button_GVR);
     RegisterFunction("SSN", OAPI_KEY_3, &MMTest1::Button_SSN);
+    RegisterFunction("TGP", OAPI_KEY_3, &MMTest1::Button_GPA);
 
     return;
 }
