@@ -63,5 +63,7 @@ bool MMTest1_DialogFunc::clbkSSN(void *id, char *str, void *usrdata) {
 
 	VC->sc->name = str;
 	strncpy(VC->exps.safeName, (VC->sc->name).c_str(), 32);
+  strcpy_s(VC->TargetText, 32, str);
+  VC->ModMsgPut("STR", VC->TargetText, VC->v);
 	return true;
 }

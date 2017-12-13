@@ -10,6 +10,8 @@
 //
 // ==============================================================
 
+#include "MMExt2_Client.hpp"
+
 #include "MMTest1_Cores.hpp"
 #include "ParseFunctions.h"
 #include <stdio.h>
@@ -22,7 +24,7 @@ MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) {
 	TestIntL = 111;
 	TestDblL = 111.111;
 	TestVecL = _V(1.1,1.1,1.1);
-
+  strcpy(TargetText, "Target text");
 
 	sc = new MMTest_Common;
 	sc->name = "TEST NAME X1";
@@ -33,6 +35,8 @@ MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) {
 	ModMsgPut("V", TestVecL, v);
 	ModMsgPutByRef("SafePtr_V1", 13, exps, v);
 
+  ModMsgPut("STR", TargetText, v);
+
 	TestIntR = 0;
 	TestDblR = 0;
 	TestVecR = _V(0,0,0);
@@ -40,7 +44,6 @@ MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) {
 	goodVar[0] = 0;
 	goodVar[1] = 0;
 	goodVar[2] = 0;
-	
 
 
 	return;

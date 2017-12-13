@@ -71,7 +71,7 @@ bool MMTest1::Update (oapi::Sketchpad *skp)
 		sprintf_s(buf,128,"V: <fail>");
 		break;
 	case 0:
-		sprintf_s(buf,128,"V: %d",VC->TestIntR);
+		sprintf_s(buf,128,"V: <unset>");
 		break;
 	case 1:
 		sprintf_s(buf,128,"V: %.3f %.3f %.3f",VC->TestVecR.x,VC->TestVecR.y,VC->TestVecR.z);

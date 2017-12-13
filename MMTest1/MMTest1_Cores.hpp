@@ -19,6 +19,7 @@
 #include <EnjoLib/ModuleMessagingExtBase.hpp>
 #include <EnjoLib/ModuleMessagingExtPut.hpp>
 #include <EnjoLib/ModuleMessagingExt.hpp>
+#include "MMExt2_Client.hpp"
 using namespace std;
 
 #ifndef _MMTest1_CORE_CLASSES
@@ -52,6 +53,9 @@ class MMTest1_VCore : public EnjoLib::ModuleMessagingExtPut{
     MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin);
     ~MMTest1_VCore();
     MMTest1_GCore* GC;
+
+    ModuleMessagingExt::Simple mm;
+    ModuleMessagingExt::Advanced mma;
 
     const char* ModuleMessagingGetModuleName() const { return "MMTest1"; }
 

@@ -70,6 +70,33 @@ void MMTest1::Button_SVL() {
 // GIR = Get Integer Remote
 void MMTest1::Button_GIR() {
 	int i;
+  bool b;
+  double d;
+  VECTOR3 v, v_ref;
+
+  v_ref = _V(9.9, 8.8, 7.7);
+
+  VC->mm.Put("MMTest1", "I", 37);
+  VC->mm.Put("MMTest1", "B", true);
+  VC->mm.Put("MMTest1", "D", 37.3737);
+  VC->mm.Put("MMTest1", "V", v_ref);
+
+  VC->mm.Get("MMTest1", "I", &i);
+  VC->mm.Get("MMTest1", "B", &b);
+  VC->mm.Get("MMTest1", "D", &d);
+  VC->mm.Get("MMTest1", "V", &v);
+
+  i = 0;
+  VC->mma.Put("MMTest1", "I", 95);
+  VC->mma.Get("MMTest1", "I", &i);
+  VC->mma.Delete("MMTest1", "I");
+  if (VC->mma.Get("MMTest1", "I", &i)) {
+    i = -1;
+  } else {
+    i++;
+  }
+
+
 	if (EnjoLib::ModuleMessagingExt().ModMsgGet("MMTest2","I", &i, VC->v)) {
 		VC->TestIntR = i;
 		VC->goodVar[0] = 1;
