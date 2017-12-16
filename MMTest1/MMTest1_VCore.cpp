@@ -21,7 +21,10 @@ MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) {
 	GC = gcin;
 	v = vin;
 
-	TestIntL = 111;
+  mm.Init("MMTest1");
+  mma.Init("MMTest1");
+  
+  TestIntL = 111;
 	TestDblL = 111.111;
 	TestVecL = _V(1.1,1.1,1.1);
   strcpy(TargetText, "Target text");

@@ -69,32 +69,83 @@ void MMTest1::Button_SVL() {
 
 // GIR = Get Integer Remote
 void MMTest1::Button_GIR() {
-	int i;
+  bool ret;
+  int i;
   bool b;
   double d;
   VECTOR3 v, v_ref;
+  MATRIX3 m3 = _M(1, 2, 3, 4, 5, 6, 7, 8, 9);
+  MATRIX4 m4 = _M(1, 2, 3, 4, 5, 6, 7, 8, 9,10,11, 12, 13, 14, 15, 16);
+
+  string s = "ABCDE";
+
 
   v_ref = _V(9.9, 8.8, 7.7);
+  v = v_ref;
 
-  VC->mm.Put("MMTest1", "I", 37);
-  VC->mm.Put("MMTest1", "B", true);
-  VC->mm.Put("MMTest1", "D", 37.3737);
-  VC->mm.Put("MMTest1", "V", v_ref);
 
-  VC->mm.Get("MMTest1", "I", &i);
-  VC->mm.Get("MMTest1", "B", &b);
-  VC->mm.Get("MMTest1", "D", &d);
-  VC->mm.Get("MMTest1", "V", &v);
+  ret = VC->mm.Put("I", 37);
+  ret = VC->mm.Put("B", true);
+  ret = VC->mm.Put("D", 37.3737);
+  ret = VC->mm.Put("V", v_ref);
+  ret = VC->mm.Put("S", "12345");
+  ret = VC->mm.Put("S", s);
+  ret = VC->mm.Put("M3", m3);
+  ret = VC->mm.Put("M4", m4);
+
+  ret = VC->mm.Get("I", &i);
+  ret = VC->mm.Get("B", &b);
+  ret = VC->mm.Get("D", &d);
+  ret = VC->mm.Get("V", &v);
+  ret = VC->mm.Get("S", &s);
+  ret = VC->mm.Get("M3", &m3);
+  ret = VC->mm.Get("M4", &m4);
 
   i = 0;
-  VC->mma.Put("MMTest1", "I", 95);
-  VC->mma.Get("MMTest1", "I", &i);
-  VC->mma.Delete("MMTest1", "I");
-  if (VC->mma.Get("MMTest1", "I", &i)) {
-    i = -1;
-  } else {
-    i++;
-  }
+  b = true;
+  d = 1.1;
+  v = _V(1, 2, 3);
+  ret = VC->mma.Put("I", i);
+  ret = VC->mma.Put("I", 95);
+  ret = VC->mma.Get("I", &i);
+  ret = VC->mma.Delete("I");
+  ret = VC->mma.Get("I", &i);
+
+  ret = VC->mma.Put("B", b);
+  ret = VC->mma.Put("B", false);
+  ret = VC->mma.Get("B", &b);
+  ret = VC->mma.Delete("B");
+  ret = VC->mma.Get("B", &b);
+
+  ret = VC->mma.Put("D", d);
+  ret = VC->mma.Put("D", 987.6);
+  ret = VC->mma.Get("D", &d);
+  ret = VC->mma.Delete("D");
+  ret = VC->mma.Get("D", &d);
+
+  ret = VC->mma.Put("V", v);
+  ret = VC->mma.Put("V", _V(9, 8, 7));
+  ret = VC->mma.Get("V", &v);
+  ret = VC->mma.Delete("V");
+  ret = VC->mma.Get("V", &v);
+
+  ret = VC->mma.Put("S", s);
+  ret = VC->mma.Put("S", "Hello");
+  ret = VC->mma.Get("S", &s);
+  ret = VC->mma.Delete("S");
+  ret = VC->mma.Get("S", &s);
+
+  ret = VC->mma.Put("M3", m3);
+  ret = VC->mma.Put("M3", _M(1, 1, 1, 1, 1, 1, 1, 1, 1));
+  ret = VC->mma.Get("M3", &m3);
+  ret = VC->mma.Delete("M3");
+  ret = VC->mma.Get("M3", &m3);
+
+  ret = VC->mma.Put("M4", m4);
+  ret = VC->mma.Put("M4", _M(8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8));
+  ret = VC->mma.Get("M4", &m4);
+  ret = VC->mma.Delete("M4");
+  ret = VC->mma.Get("M4", &m4);
 
 
 	if (EnjoLib::ModuleMessagingExt().ModMsgGet("MMTest2","I", &i, VC->v)) {
