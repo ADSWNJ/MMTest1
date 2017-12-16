@@ -79,7 +79,6 @@ void MMTest1::Button_GIR() {
 
   string s = "ABCDE";
 
-
   v_ref = _V(9.9, 8.8, 7.7);
   v = v_ref;
 
@@ -93,6 +92,7 @@ void MMTest1::Button_GIR() {
   ret = VC->mm.Put("M3", m3);
   ret = VC->mm.Put("M4", m4);
 
+
   ret = VC->mm.Get("I", &i);
   ret = VC->mm.Get("B", &b);
   ret = VC->mm.Get("D", &d);
@@ -100,6 +100,7 @@ void MMTest1::Button_GIR() {
   ret = VC->mm.Get("S", &s);
   ret = VC->mm.Get("M3", &m3);
   ret = VC->mm.Get("M4", &m4);
+
 
   i = 0;
   b = true;

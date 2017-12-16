@@ -98,22 +98,23 @@ namespace ModuleMessagingExt
   let you resolve any ModuleMessagigngExt for this and future projects.
   */
 
-
   typedef bool(*FUNC_MMEXT2_PUT_INT) (const char* mod, const char* var, const int& val,     const char* ves);
   typedef bool(*FUNC_MMEXT2_PUT_BOO) (const char* mod, const char* var, const bool& val,    const char* ves);
   typedef bool(*FUNC_MMEXT2_PUT_DBL) (const char* mod, const char* var, const double& val,  const char* ves);
   typedef bool(*FUNC_MMEXT2_PUT_VEC) (const char* mod, const char* var, const VECTOR3& val, const char* ves);
   typedef bool(*FUNC_MMEXT2_PUT_MX3) (const char* mod, const char* var, const MATRIX3& val, const char* ves);
   typedef bool(*FUNC_MMEXT2_PUT_MX4) (const char* mod, const char* var, const MATRIX4& val, const char* ves);
-  typedef bool(*FUNC_MMEXT2_PUT_CST) (const char* mod, const char* var, const char *val,    const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_INT) (const char* mod, const char* var, int* val,           const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_BOO) (const char* mod, const char* var, bool* val,          const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_DBL) (const char* mod, const char* var, double* val,        const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_VEC) (const char* mod, const char* var, VECTOR3* val,       const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_MX3) (const char* mod, const char* var, MATRIX3* val,       const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_MX4) (const char* mod, const char* var, MATRIX4* val,       const char* ves);
-  typedef bool(*FUNC_MMEXT2_GET_CST) (const char* mod, const char* var, char **val,         const char* ves);
   typedef bool(*FUNC_MMEXT2_DEL_ANY) (const char* mod, const char* var,                     const char* ves);
+
+  typedef bool(*FUNC_MMEXT2_PUT_CST) (const char* mod, const char* var, const char *val, const char* ves);
+  typedef bool(*FUNC_MMEXT2_GET_CST) (const char* mod, const char* var, char **val, const size_t len, const char* ves);
+  typedef bool(*FUNC_MMEXT2_GET_CSL) (const char* mod, const char* var, size_t *val, const char* ves);
 
 
   class Implementation {
@@ -141,6 +142,7 @@ namespace ModuleMessagingExt
     FUNC_MMEXT2_GET_MX3 m_fncGet_MX3;
     FUNC_MMEXT2_GET_MX4 m_fncGet_MX4;
     FUNC_MMEXT2_GET_CST m_fncGet_CST;
+    FUNC_MMEXT2_GET_CSL m_fncGet_CSL;
 
     FUNC_MMEXT2_DEL_ANY m_fncDel_ANY = NULL;
 
@@ -162,14 +164,18 @@ namespace ModuleMessagingExt
 
     bool __Put(std::string mod, const char* var, const std::string &val, const VESSEL* ves) const { return ((m_fncPut_CST) && ((*m_fncPut_CST)(mod.c_str(), var, val.c_str(), ves->GetName()))); }
     bool __Get(std::string mod, const char* var, std::string* val, const VESSEL* ves) const {
-      if (!m_fncGet_CST) return false;
-      char buf[256] = "";
-      char *p1 = buf;
+      if (!m_fncGet_CSL || !m_fncGet_CST) return false;
+      size_t csl;
+      if (!(*m_fncGet_CSL)(mod.c_str(), var, &csl, ves->GetName())) return false;
+
+      char *p1 = static_cast<char *>(malloc(csl));
       char **p2 = &p1;
-      if (!(*m_fncGet_CST)(mod.c_str(), var, p2, ves->GetName())) return false;
-      *val = buf;
+      if (!(*m_fncGet_CST)(mod.c_str(), var, p2, csl, ves->GetName())) return false;
+      *val = p1;
+      free(p1);
       return true;
     };
+    bool __Get(std::string mod, const char* var, size_t* val, const VESSEL* ves) const { return ((m_fncGet_CSL) && ((*m_fncGet_CSL)(mod.c_str(), var, val, ves->GetName()))); }
 
 
     void __Init() {
@@ -188,6 +194,7 @@ namespace ModuleMessagingExt
       m_fncGet_MX3 = (FUNC_MMEXT2_GET_MX3)GetProcAddress(m_hDLL, "ModMsgGet_MATRIX3_v1");
       m_fncGet_MX4 = (FUNC_MMEXT2_GET_MX4)GetProcAddress(m_hDLL, "ModMsgGet_MATRIX4_v1");
       m_fncGet_CST = (FUNC_MMEXT2_GET_CST)GetProcAddress(m_hDLL, "ModMsgGet_c_str_v1");
+      m_fncGet_CSL = (FUNC_MMEXT2_GET_CSL)GetProcAddress(m_hDLL, "ModMsgGet_c_str_len_v1");
       m_fncDel_ANY = (FUNC_MMEXT2_DEL_ANY)GetProcAddress(m_hDLL, "ModMsgDel_any_v1");
     };
     void __Exit() {
@@ -206,6 +213,7 @@ namespace ModuleMessagingExt
       m_fncGet_MX4 = NULL;
       m_fncPut_CST = NULL;
       m_fncGet_CST = NULL;
+      m_fncGet_CSL = NULL;
       m_fncDel_ANY = NULL;
     };
 
