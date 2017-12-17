@@ -82,6 +82,24 @@ void MMTest1::Button_GIR() {
   v_ref = _V(9.9, 8.8, 7.7);
   v = v_ref;
 
+#pragma pack(push)
+#pragma pack(8)
+  struct MyStruct : public ModuleMessagingExt::MMStruct {
+    MyStruct() : ModuleMessagingExt::MMStruct(1, sizeof(MyStruct)) {};
+    char MyMsg[20];
+  };
+#pragma pack(pop)
+
+
+  MyStruct ss1;
+  strcpy(ss1.MyMsg, "Hello world!");
+  const MyStruct* ssRet;
+
+
+  ret = VC->mma.PutMMStruct("SS1", &ss1);
+  ret = VC->mma.GetMMStruct("SS1", &ssRet, 1, sizeof(MyStruct));
+
+  strcpy(ss1.MyMsg, "Changed??");
 
   ret = VC->mm.Put("I", 37);
   ret = VC->mm.Put("B", true);

@@ -1,9 +1,10 @@
 // ====================================================================
-//                ORBITER AUX LIBRARY: ModuleMessagingExt v2 (MMExt2)
-//             http://sf.net/projects/enjomitchsorbit
+//         ORBITER AUX LIBRARY: ModuleMessagingExt v2 (MMExt2)
 //
-// Allows Orbiter modules to communicate with each other,
-// using predefined module and variable names.
+// MMExt 2 allows Orbiter modules to communicate with each other,
+// using predefined module and variable names, with no static binding or
+// dependencies. If the MMExt2 module is not installed, all clients
+// putting and getting variables will work standalone with no issues. 
 //
 // Copyright  (C) 2014-2017 Szymon "Enjo" Ender and Andrew "ADSWNJ" Stokes
 //
@@ -24,7 +25,6 @@
 // <http://www.gnu.org/licenses/>.
 // ====================================================================
 
-#pragma once
 #ifndef MMExt2_Client_H
 #define MMExt2_Client_H
 #include "windows.h"
@@ -97,6 +97,17 @@ namespace ModuleMessagingExt
   you can edit the Linker Input Additional Directories in the orbiter_vs2005 proprty page and this will
   let you resolve any ModuleMessagigngExt for this and future projects.
   */
+  struct MMStruct {
+  public:
+    MMStruct(unsigned int sVer, unsigned int sSize) : _sVer(sVer), _sSize(sSize) {};
+    virtual ~MMStruct() {};
+    bool IsCorrectVersion(unsigned int sVer) const { return sVer == _sVer; }
+    bool IsCorrectSize(unsigned int sSize) const { return sSize == _sSize; }
+  private:
+    unsigned int _sVer;
+    unsigned int _sSize;
+  };
+
 
   typedef bool(*FUNC_MMEXT2_PUT_INT) (const char* mod, const char* var, const int& val,     const char* ves);
   typedef bool(*FUNC_MMEXT2_PUT_BOO) (const char* mod, const char* var, const bool& val,    const char* ves);
@@ -116,6 +127,9 @@ namespace ModuleMessagingExt
   typedef bool(*FUNC_MMEXT2_GET_CST) (const char* mod, const char* var, char **val, const size_t len, const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_CSL) (const char* mod, const char* var, size_t *val, const char* ves);
 
+  typedef bool(*FUNC_MMEXT2_PUT_MMS) (const char* mod, const char* var, const MMStruct* val, const char* ves);
+  typedef bool(*FUNC_MMEXT2_GET_MMS) (const char* mod, const char* var, const MMStruct** val, const char* ves);
+
 
   class Implementation {
 
@@ -134,6 +148,7 @@ namespace ModuleMessagingExt
     FUNC_MMEXT2_PUT_MX3 m_fncPut_MX3;
     FUNC_MMEXT2_PUT_MX4 m_fncPut_MX4;
     FUNC_MMEXT2_PUT_CST m_fncPut_CST;
+    FUNC_MMEXT2_PUT_MMS m_fncPut_MMS;
 
     FUNC_MMEXT2_GET_INT m_fncGet_INT;
     FUNC_MMEXT2_GET_BOO m_fncGet_BOO;
@@ -143,6 +158,7 @@ namespace ModuleMessagingExt
     FUNC_MMEXT2_GET_MX4 m_fncGet_MX4;
     FUNC_MMEXT2_GET_CST m_fncGet_CST;
     FUNC_MMEXT2_GET_CSL m_fncGet_CSL;
+    FUNC_MMEXT2_GET_MMS m_fncGet_MMS;
 
     FUNC_MMEXT2_DEL_ANY m_fncDel_ANY = NULL;
 
@@ -152,13 +168,15 @@ namespace ModuleMessagingExt
     bool __Put(std::string mod, const char* var, const VECTOR3 &val, const VESSEL* ves) const { return ((m_fncPut_VEC) && ((*m_fncPut_VEC)(mod.c_str(), var, val, ves->GetName()))); }
     bool __Put(std::string mod, const char* var, const MATRIX3 &val, const VESSEL* ves) const { return ((m_fncPut_MX3) && ((*m_fncPut_MX3)(mod.c_str(), var, val, ves->GetName()))); }
     bool __Put(std::string mod, const char* var, const MATRIX4 &val, const VESSEL* ves) const { return ((m_fncPut_MX4) && ((*m_fncPut_MX4)(mod.c_str(), var, val, ves->GetName()))); }
+    bool __Put(std::string mod, const char* var, const MMStruct* val, const VESSEL* ves)   const { return ((m_fncPut_MMS) && ((*m_fncPut_MMS)(mod.c_str(), var, val, ves->GetName()))); }
 
-    bool __Get(std::string mod, const char* var, int* val,     const VESSEL* ves) const {       return ((m_fncGet_INT) && ((*m_fncGet_INT)(mod.c_str(), var, val, ves->GetName()))); }
-    bool __Get(std::string mod, const char* var, bool* val,    const VESSEL* ves) const {       return ((m_fncGet_BOO) && ((*m_fncGet_BOO)(mod.c_str(), var, val, ves->GetName()))); }
-    bool __Get(std::string mod, const char* var, double* val,  const VESSEL* ves) const {       return ((m_fncGet_DBL) && ((*m_fncGet_DBL)(mod.c_str(), var, val, ves->GetName()))); }
-    bool __Get(std::string mod, const char* var, VECTOR3* val, const VESSEL* ves) const {       return ((m_fncGet_VEC) && ((*m_fncGet_VEC)(mod.c_str(), var, val, ves->GetName()))); }
-    bool __Get(std::string mod, const char* var, MATRIX3* val, const VESSEL* ves) const {       return ((m_fncGet_MX3) && ((*m_fncGet_MX3)(mod.c_str(), var, val, ves->GetName()))); }
-    bool __Get(std::string mod, const char* var, MATRIX4* val, const VESSEL* ves) const {       return ((m_fncGet_MX4) && ((*m_fncGet_MX4)(mod.c_str(), var, val, ves->GetName()))); }
+    bool __Get(std::string mod, const char* var, int* val,     const VESSEL* ves)       const { return ((m_fncGet_INT) && ((*m_fncGet_INT)(mod.c_str(), var, val, ves->GetName()))); }
+    bool __Get(std::string mod, const char* var, bool* val,    const VESSEL* ves)       const { return ((m_fncGet_BOO) && ((*m_fncGet_BOO)(mod.c_str(), var, val, ves->GetName()))); }
+    bool __Get(std::string mod, const char* var, double* val,  const VESSEL* ves)       const { return ((m_fncGet_DBL) && ((*m_fncGet_DBL)(mod.c_str(), var, val, ves->GetName()))); }
+    bool __Get(std::string mod, const char* var, VECTOR3* val, const VESSEL* ves)       const { return ((m_fncGet_VEC) && ((*m_fncGet_VEC)(mod.c_str(), var, val, ves->GetName()))); }
+    bool __Get(std::string mod, const char* var, MATRIX3* val, const VESSEL* ves)       const { return ((m_fncGet_MX3) && ((*m_fncGet_MX3)(mod.c_str(), var, val, ves->GetName()))); }
+    bool __Get(std::string mod, const char* var, MATRIX4* val, const VESSEL* ves)       const { return ((m_fncGet_MX4) && ((*m_fncGet_MX4)(mod.c_str(), var, val, ves->GetName()))); }
+    bool __Get(std::string mod, const char* var, const MMStruct** val, const VESSEL* ves)     const { return ((m_fncGet_MMS) && ((*m_fncGet_MMS)(mod.c_str(), var, val, ves->GetName()))); }
 
     bool __Del(std::string mod, const char* var, const VESSEL* ves) const {      return ((m_fncDel_ANY) && ((*m_fncDel_ANY)(mod.c_str(), var, ves->GetName())));    };
 
@@ -187,6 +205,7 @@ namespace ModuleMessagingExt
       m_fncPut_MX3 = (FUNC_MMEXT2_PUT_MX3)GetProcAddress(m_hDLL, "ModMsgPut_MATRIX3_v1");
       m_fncPut_MX4 = (FUNC_MMEXT2_PUT_MX4)GetProcAddress(m_hDLL, "ModMsgPut_MATRIX4_v1");
       m_fncPut_CST = (FUNC_MMEXT2_PUT_CST)GetProcAddress(m_hDLL, "ModMsgPut_c_str_v1");
+      m_fncPut_MMS = (FUNC_MMEXT2_PUT_MMS)GetProcAddress(m_hDLL, "ModMsgPut_MMStruct_v1");
       m_fncGet_INT = (FUNC_MMEXT2_GET_INT)GetProcAddress(m_hDLL, "ModMsgGet_int_v1");
       m_fncGet_BOO = (FUNC_MMEXT2_GET_BOO)GetProcAddress(m_hDLL, "ModMsgGet_bool_v1");
       m_fncGet_DBL = (FUNC_MMEXT2_GET_DBL)GetProcAddress(m_hDLL, "ModMsgGet_double_v1");
@@ -195,6 +214,7 @@ namespace ModuleMessagingExt
       m_fncGet_MX4 = (FUNC_MMEXT2_GET_MX4)GetProcAddress(m_hDLL, "ModMsgGet_MATRIX4_v1");
       m_fncGet_CST = (FUNC_MMEXT2_GET_CST)GetProcAddress(m_hDLL, "ModMsgGet_c_str_v1");
       m_fncGet_CSL = (FUNC_MMEXT2_GET_CSL)GetProcAddress(m_hDLL, "ModMsgGet_c_str_len_v1");
+      m_fncGet_MMS = (FUNC_MMEXT2_GET_MMS)GetProcAddress(m_hDLL, "ModMsgGet_MMStruct_v1");
       m_fncDel_ANY = (FUNC_MMEXT2_DEL_ANY)GetProcAddress(m_hDLL, "ModMsgDel_any_v1");
     };
     void __Exit() {
@@ -205,6 +225,7 @@ namespace ModuleMessagingExt
       m_fncPut_VEC = NULL;
       m_fncPut_MX3 = NULL;
       m_fncPut_MX4 = NULL;
+      m_fncPut_MMS = NULL;
       m_fncGet_INT = NULL;
       m_fncGet_BOO = NULL;
       m_fncGet_DBL = NULL;
@@ -214,18 +235,41 @@ namespace ModuleMessagingExt
       m_fncPut_CST = NULL;
       m_fncGet_CST = NULL;
       m_fncGet_CSL = NULL;
+      m_fncGet_MMS = NULL;
       m_fncDel_ANY = NULL;
     };
 
   };
 
+
+
   class Advanced {
   public:
-                         void Init   (const char *moduleName)                                                               { m_mod = moduleName; m_imp.__Init(); }
-                         bool Put    (const char* var, const char val[], const VESSEL* ves = oapiGetFocusInterface()) const { return m_imp.__Put(m_mod, var, std::string(val), ves); }
-    template<typename T> bool Put    (const char* var, const T& val, const VESSEL* ves = oapiGetFocusInterface())     const { return m_imp.__Put(m_mod, var, val, ves); }
-    template<typename T> bool Get    (const char* var, T* val, const VESSEL* ves = oapiGetFocusInterface())           const { return m_imp.__Get(m_mod, var, val, ves); }
-                         bool Delete (const char* var, const VESSEL* ves = oapiGetFocusInterface())                   const { return m_imp.__Del(m_mod, var, ves); }
+    void Init   (const char *moduleName)                                                               { m_mod = moduleName; m_imp.__Init(); }
+    bool Put    (const char* var, const char val[], const VESSEL* ves = oapiGetFocusInterface()) const { return m_imp.__Put(m_mod, var, std::string(val), ves); }
+    template<typename T>
+    bool Put    (const char* var, const T& val, const VESSEL* ves = oapiGetFocusInterface())     const { return m_imp.__Put(m_mod, var, val, ves); }
+    template<typename T>
+    bool Get    (const char* var, T* val, const VESSEL* ves = oapiGetFocusInterface())           const { return m_imp.__Get(m_mod, var, val, ves); }
+    bool Delete (const char* var, const VESSEL* ves = oapiGetFocusInterface())                   const { return m_imp.__Del(m_mod, var, ves); }
+
+
+    template<typename T>
+    bool PutMMStruct(const char* var, const T val, const VESSEL* ves = oapiGetFocusInterface()) const {
+      const MMStruct *pSafeStruct = val;
+      return m_imp.__Put(m_mod, var, pSafeStruct, ves);
+    }
+
+    template<typename T>
+    bool GetMMStruct(const char* var, T* val, const unsigned int ver, const unsigned int siz, const VESSEL* ves = oapiGetFocusInterface()) const {
+      const MMStruct *pMMStruct;
+      if (!m_imp.__Get(m_mod, var, &pMMStruct, ves)) return false;
+      if (!pMMStruct->IsCorrectSize(siz) || !pMMStruct->IsCorrectVersion(ver)) return false;
+      *val = dynamic_cast<T>(pMMStruct);
+      return (val != NULL);
+    }
+
+
   private:
     Implementation m_imp;
     std::string m_mod;
@@ -234,11 +278,13 @@ namespace ModuleMessagingExt
   class Basic
   {
   public:
-                         void Init   (const char *moduleName)                  { m_mod = moduleName; m_ves = oapiGetFocusInterface(); m_imp.__Init();    }
-                         bool Put    (const char* var, const char val[]) const { return m_imp.__Put(m_mod, var, std::string(val), m_ves); }
-    template<typename T> bool Put    (const char* var, const T& val)     const { return m_imp.__Put(m_mod, var, val, m_ves); }
-    template<typename T> bool Get    (const char* var, T* val)           const { return m_imp.__Get(m_mod, var, val, m_ves); }
-                         bool Delete (const char* var)                   const { return m_imp.__Del(m_mod, var, m_ves); }
+    void Init   (const char *moduleName)                  { m_mod = moduleName; m_ves = oapiGetFocusInterface(); m_imp.__Init();    }
+    bool Put    (const char* var, const char val[]) const { return m_imp.__Put(m_mod, var, std::string(val), m_ves); }
+    template<typename T>
+    bool Put    (const char* var, const T& val)     const { return m_imp.__Put(m_mod, var, val, m_ves); }
+    template<typename T>
+    bool Get    (const char* var, T* val)           const { return m_imp.__Get(m_mod, var, val, m_ves); }
+    bool Delete (const char* var)                   const { return m_imp.__Del(m_mod, var, m_ves); }
   private:
     Implementation m_imp;
     const VESSEL *m_ves;
