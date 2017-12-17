@@ -1,5 +1,5 @@
 // ====================================================================
-//         ORBITER AUX LIBRARY: ModuleMessagingExt v2 (MMExt2)
+//         ORBITER AUX LIBRARY: MMExt2 v2 (MMExt2)
 //
 // MMExt 2 allows Orbiter modules to communicate with each other,
 // using predefined module and variable names, with no static binding or
@@ -10,18 +10,18 @@
 //
 //                         All rights reserved
 //
-// ModuleMessagingExt v2 is free software: you can redistribute it
+// MMExt2 v2 is free software: you can redistribute it
 // and/or modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation, either version
 // 3 of the License, or (at your option) any later version.
 //
-// ModuleMessagingExt v2 is distributed in the hope that it will
+// MMExt2 v2 is distributed in the hope that it will
 // be useful, but WITHOUT ANY WARRANTY; without even the implied
 // warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // See the GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with ModuleMessagingExt. If not, see
+// License along with MMExt2. If not, see
 // <http://www.gnu.org/licenses/>.
 // ====================================================================
 
@@ -31,20 +31,20 @@
 #include "orbitersdk.h"
 #include <string>
 
-namespace ModuleMessagingExt
+namespace MMExt2
 {
   /*
   Purpose:
 
-  Gets data from other MFD's using the common ModuleMessagingExt library. Data can be passed by val
-  or by reference. For pass by reference, the ModuleMessagingExt library implements several further
+  Gets data from other MFD's using the common MMExt2 library. Data can be passed by val
+  or by reference. For pass by reference, the MMExt2 library implements several further
   checks to ensure safety and to deal with potential version or definition mismatches.
 
   Developer Instructions:
 
-  1. #include "EnjoLib/ModuleMessagingExt.hpp" where you need to get data from ModuleMessagingExt.
+  1. #include "EnjoLib/MMExt2.hpp" where you need to get data from MMExt2.
 
-  2. For get by val ... call EnjoLib::ModuleMessagingExt().Get(MFDname, var, &val, {vessel}),
+  2. For get by val ... call EnjoLib::MMExt2().Get(MFDname, var, &val, {vessel}),
   where:	MFDname is a string literal for the sending MFD or module (e.g. "BaseSyncMFD"),
   var is a string literal for the variable you are looking for
   &val is the address of where you want the val to be received, and is one of the following
@@ -58,8 +58,8 @@ namespace ModuleMessagingExt
 
   #pragma pack(push)
   #pragma pack(8)
-  struct XYZ : public EnjoLib::ModuleMessagingExtBase {
-  XYZ():EnjoLib::ModuleMessagingExtBase(13,sizeof(XYZ)) {};  // version 13
+  struct XYZ : public EnjoLib::MMExt2Base {
+  XYZ():EnjoLib::MMExt2Base(13,sizeof(XYZ)) {};  // version 13
   ...
   ... your data structures (don't use STL's like std::string
   ... or std::map, etc as these tend not to be byte-compatible
@@ -70,7 +70,7 @@ namespace ModuleMessagingExt
 
   (Obviously with their structure name instead of XYZ). Include this header into your code to give you
   the latest definition of the structure and version you are accessing. Make a note of the version number
-  on the ModuleMessagingExtBase constructor (i.e. 13 in this case), as you need it for your ModMsgGetByRef()
+  on the MMExt2Base constructor (i.e. 13 in this case), as you need it for your ModMsgGetByRef()
   call.
 
   In your code, define a pointer to a constant XYZ structure (replace XYZ, of course), such as:
@@ -81,7 +81,7 @@ namespace ModuleMessagingExt
   and the other module author wanted to cooperate, then have both sides ModMsgGetByRef the other side
   and write local / read remote.)
 
-  Then, call EnjoLib::ModuleMessagingExt().ModMsgGetByRef(MFDname, structName, structVer, &structPtr,
+  Then, call EnjoLib::MMExt2().ModMsgGetByRef(MFDname, structName, structVer, &structPtr,
   {vessel}), where the structName and structVer are given to you by the author of the PUTting module,
   and the other parameters are the same as the ModMsgGet(). In addition to looking up the data and returning
   it if found, the library will do additional checks to ensure the structure has a valid
@@ -91,7 +91,7 @@ namespace ModuleMessagingExt
   check is there as a further failsafe). So if you get a "true" back from ModMsgGetByRef(), you can be
   reasonably sure that everything is safe and you will not crash the Orbiter when you reference the data.
 
-  4. To link your code, make sure your Linker, Input, AdditionalDependencies includes ModuleMessagingExt.lib.
+  4. To link your code, make sure your Linker, Input, AdditionalDependencies includes MMExt2.lib.
   Have a look at http://orbiter-forum.com/showthread.php?t=34971 for advice on setting up Property Pages
   for Orbiter development (highly recommended, and it makes things much easier). If you do this, then
   you can edit the Linker Input Additional Directories in the orbiter_vs2005 proprty page and this will
@@ -139,7 +139,7 @@ namespace ModuleMessagingExt
     ~Implementation() { __Exit(); }
 
   private:
-    HMODULE m_hDLL = NULL;
+    HMODULE m_hDLL;
 
     FUNC_MMEXT2_PUT_INT m_fncPut_INT;
     FUNC_MMEXT2_PUT_BOO m_fncPut_BOO;
@@ -160,7 +160,7 @@ namespace ModuleMessagingExt
     FUNC_MMEXT2_GET_CSL m_fncGet_CSL;
     FUNC_MMEXT2_GET_MMS m_fncGet_MMS;
 
-    FUNC_MMEXT2_DEL_ANY m_fncDel_ANY = NULL;
+    FUNC_MMEXT2_DEL_ANY m_fncDel_ANY;
 
     bool __Put(std::string mod, const char* var, const int &val,     const VESSEL* ves) const { return ((m_fncPut_INT) && ((*m_fncPut_INT)(mod.c_str(), var, val, ves->GetName()))); }
     bool __Put(std::string mod, const char* var, const bool &val,    const VESSEL* ves) const { return ((m_fncPut_BOO) && ((*m_fncPut_BOO)(mod.c_str(), var, val, ves->GetName()))); }
@@ -252,7 +252,7 @@ namespace ModuleMessagingExt
     template<typename T>
     bool Get    (const char* var, T* val, const VESSEL* ves = oapiGetFocusInterface())           const { return m_imp.__Get(m_mod, var, val, ves); }
     bool Delete (const char* var, const VESSEL* ves = oapiGetFocusInterface())                   const { return m_imp.__Del(m_mod, var, ves); }
-
+    void SetMod (const char *moduleName)                                                               { m_mod = moduleName; }
 
     template<typename T>
     bool PutMMStruct(const char* var, const T val, const VESSEL* ves = oapiGetFocusInterface()) const {

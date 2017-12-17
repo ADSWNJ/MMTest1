@@ -54,8 +54,8 @@ class MMTest1_VCore : public EnjoLib::ModuleMessagingExtPut{
     ~MMTest1_VCore();
     MMTest1_GCore* GC;
 
-    ModuleMessagingExt::Basic mm;
-    ModuleMessagingExt::Advanced mma;
+    MMExt2::Basic mm;
+    MMExt2::Advanced mma;
 
     const char* ModuleMessagingGetModuleName() const { return "MMTest1"; }
 

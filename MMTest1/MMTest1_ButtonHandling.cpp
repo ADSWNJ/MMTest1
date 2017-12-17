@@ -84,8 +84,8 @@ void MMTest1::Button_GIR() {
 
 #pragma pack(push)
 #pragma pack(8)
-  struct MyStruct : public ModuleMessagingExt::MMStruct {
-    MyStruct() : ModuleMessagingExt::MMStruct(1, sizeof(MyStruct)) {};
+  struct MyStruct : public MMExt2::MMStruct {
+    MyStruct() : MMExt2::MMStruct(1, sizeof(MyStruct)) {};
     char MyMsg[20];
   };
 #pragma pack(pop)
