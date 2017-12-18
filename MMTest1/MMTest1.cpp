@@ -8,7 +8,7 @@
 //
 //	Description:
 //
-//	Test MFD to showcase MFD Button Page (simple control of buttons), MFD Persist (simple persistence hierarchy), and ModuleMessagingExt (data tranfer between MFD's)
+//	Test MFD to showcase MFD Button Page (simple control of buttons), MFD Persist (simple persistence hierarchy), and MMExt2 (data tranfer between MFD's)
 //
 //	Copyright Notice:
 //
@@ -36,6 +36,7 @@
 //
 //	Release History:
 //
+//  V3.00 Updated to use MMExt2 dynamically (no more error 126 on launch!!)
 //	V2.00	Updated to use ModuleMessagingExt
 //  V1.00	Initial Release
 // ================================================================================================

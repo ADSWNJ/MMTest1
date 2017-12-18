@@ -16,9 +16,6 @@
 #include "MFDPersist.hpp"
 #include <list>
 #include <string>
-#include <EnjoLib/ModuleMessagingExtBase.hpp>
-#include <EnjoLib/ModuleMessagingExtPut.hpp>
-#include <EnjoLib/ModuleMessagingExt.hpp>
 #include "MMExt2_Client.hpp"
 using namespace std;
 
@@ -35,19 +32,12 @@ public:
 
 };
 
-#pragma pack(push)
-#pragma pack(8)
-struct ExportStruct : public EnjoLib::ModuleMessagingExtBase {
-	ExportStruct():EnjoLib::ModuleMessagingExtBase(13, sizeof(ExportStruct)) {};	// Version 13
-	char safeName[32];
-};
-#pragma pack(pop)
 
 //+++++
 // Vessel Persistence core. One of these is instantiated per Vessel flown with RV Orientation up.
 //+++++
 
-class MMTest1_VCore : public EnjoLib::ModuleMessagingExtPut{
+class MMTest1_VCore {
   public:
     // Core references ... instantiation, vessel reference and GC.
     MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin);
@@ -56,8 +46,6 @@ class MMTest1_VCore : public EnjoLib::ModuleMessagingExtPut{
 
     MMExt2::Basic mm;
     MMExt2::Advanced mma;
-
-    const char* ModuleMessagingGetModuleName() const { return "MMTest1"; }
 
 		// Add Vessel data here
     VESSEL *v;
@@ -75,11 +63,6 @@ class MMTest1_VCore : public EnjoLib::ModuleMessagingExtPut{
 	} s;
 
 	MMTest_Common *sc;
-
-#pragma pack(push)
-#pragma pack(8)
-	ExportStruct exps;
-#pragma pack(pop)
 
   private:
 };

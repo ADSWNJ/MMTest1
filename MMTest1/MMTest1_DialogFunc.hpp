@@ -26,4 +26,4 @@ class MMTest1_DialogFunc
 
 };
 
-#endif // MMTest1_DIALOGTGT
+#endif // MMTest1_DIALOGFunc

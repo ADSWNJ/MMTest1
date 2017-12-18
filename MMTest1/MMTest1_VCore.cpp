@@ -31,14 +31,11 @@ MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) {
 
 	sc = new MMTest_Common;
 	sc->name = "TEST NAME X1";
-	strncpy(exps.safeName, sc->name.c_str(), 32);
 
-	ModMsgPut("I", TestIntL, v);
-	ModMsgPut("D", TestDblL, v);
-	ModMsgPut("V", TestVecL, v);
-	ModMsgPutByRef("SafePtr_V1", 13, exps, v);
-
-  ModMsgPut("STR", TargetText, v);
+	mm.Put("I", TestIntL);
+	mm.Put("D", TestDblL);
+	mm.Put("V", TestVecL);
+  mm.Put("STR", TargetText);
 
 	TestIntR = 0;
 	TestDblR = 0;

@@ -38,17 +38,12 @@ public:
   void Button_GDR();
   void Button_GVR();
   void Button_SSN();
-  void Button_GPA();
 
-  const char* GetModuleName() const;
 
   // Persistence functions
   void ReadStatus(FILEHANDLE scn);
   void WriteStatus(FILEHANDLE scn) const;
 
-  // Unit conversions
-  double id( double d ) const;
-  double ed( double d ) const;
 
 protected:
   MMTest1_GCore* GC;

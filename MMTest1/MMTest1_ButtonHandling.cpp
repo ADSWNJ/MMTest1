@@ -12,7 +12,6 @@
 
 #include "MMTest1.hpp"
 #include "MMTest1_DialogFunc.hpp"
-#include <EnjoLib/ModuleMessagingExt.hpp>
 
 // ==============================================================
 // MFD button hooks to Button Page library
@@ -71,8 +70,7 @@ void MMTest1::Button_SVL() {
 void MMTest1::Button_GIR() {
   bool ret;
   int i;
-  bool b;
-  double d;
+
   VECTOR3 v, v_ref;
   MATRIX3 m3 = _M(1, 2, 3, 4, 5, 6, 7, 8, 9);
   MATRIX4 m4 = _M(1, 2, 3, 4, 5, 6, 7, 8, 9,10,11, 12, 13, 14, 15, 16);
@@ -97,8 +95,11 @@ void MMTest1::Button_GIR() {
 
 
   ret = VC->mma.PutMMStruct("SS1", &ss1);
-  ret = VC->mma.GetMMStruct("SS1", &ssRet, 1, sizeof(MyStruct));
+  ret = VC->mma.GetMMStruct("MMTest1", "SS1", &ssRet, 1, sizeof(MyStruct));
 
+  /*
+  bool b;
+  double d;
   strcpy(ss1.MyMsg, "Changed??");
 
   ret = VC->mm.Put("I", 37);
@@ -165,9 +166,9 @@ void MMTest1::Button_GIR() {
   ret = VC->mma.Get("M4", &m4);
   ret = VC->mma.Delete("M4");
   ret = VC->mma.Get("M4", &m4);
+*/
 
-
-	if (EnjoLib::ModuleMessagingExt().ModMsgGet("MMTest2","I", &i, VC->v)) {
+	if (VC->mm.Get("MMTest2","I", &i)) {
 		VC->TestIntR = i;
 		VC->goodVar[0] = 1;
 	} else {
@@ -180,7 +181,7 @@ void MMTest1::Button_GIR() {
 // GDR = Get Double Remote
 void MMTest1::Button_GDR() {
 	double d;
-	if (EnjoLib::ModuleMessagingExt().ModMsgGet("MMTest2","D", &d, VC->v)) {
+	if (VC->mm.Get("MMTest2","D", &d)) {
 		VC->TestDblR = d;
 		VC->goodVar[1] = 1;
 	} else {
@@ -193,7 +194,7 @@ void MMTest1::Button_GDR() {
 // GVR = Get Vector Remote
 void MMTest1::Button_GVR() {
 	VECTOR3 vec;
-	if (EnjoLib::ModuleMessagingExt().ModMsgGet("MMTest2","V", &vec, VC->v)) {
+	if (VC->mma.Get("MMTest2","V", &vec, VC->v)) {
 		VC->TestVecR = vec;
 		VC->goodVar[2] = 1;
 	} else {
@@ -212,23 +213,3 @@ void MMTest1::Button_SSN() {
 };
 
 
-
-
-// GPA = Test Get Proc Address
-void MMTest1::Button_GPA() {
-
-  HMODULE hMMT2 = GetModuleHandleA(".\\Modules\\Plugin\\MMTest2.dll");
-  if (hMMT2 == nullptr) return;
-
-  FARPROC hMGE = GetProcAddress(hMMT2, "MyGlobalEntry");
-
-  typedef bool(*RMTCALL)();
-
-  RMTCALL rc = (RMTCALL)(hMGE);
-
-  (*rc)();
-
-  return;
-
-
-};

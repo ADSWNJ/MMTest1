@@ -12,7 +12,6 @@
 
 #include "MMTest1_DialogFunc.hpp"
 #include "MMTest1_Cores.hpp"
-#include <EnjoLib/ModuleMessagingExt.hpp>
 
 bool MMTest1_DialogFunc::clbkSIL(void *id, char *str, void *usrdata) {
   int parami; 
@@ -24,7 +23,7 @@ bool MMTest1_DialogFunc::clbkSIL(void *id, char *str, void *usrdata) {
   MMTest1_VCore* VC = LC->VC;
 
   VC->TestIntL = parami;
-	VC->ModMsgPut("I",VC->TestIntL, VC->v);
+	VC->mm.Put("I",VC->TestIntL);
   return true;
 }
 
@@ -38,7 +37,7 @@ bool MMTest1_DialogFunc::clbkSDL(void *id, char *str, void *usrdata) {
   MMTest1_VCore* VC = LC->VC;
 
   VC->TestDblL = paramf;
-	VC->ModMsgPut("D",VC->TestDblL,VC->v);
+	VC->mm.Put("D",VC->TestDblL);
   return true;
 }
 
@@ -52,7 +51,7 @@ bool MMTest1_DialogFunc::clbkSVL(void *id, char *str, void *usrdata) {
   MMTest1_VCore* VC = LC->VC;
 
   VC->TestVecL = _V(paramf1,paramf2,paramf3);
-	VC->ModMsgPut("V",VC->TestVecL, VC->v);
+	VC->mm.Put("V",VC->TestVecL);
   return true;
 }
 
@@ -62,8 +61,7 @@ bool MMTest1_DialogFunc::clbkSSN(void *id, char *str, void *usrdata) {
 	MMTest1_VCore* VC = LC->VC;
 
 	VC->sc->name = str;
-	strncpy(VC->exps.safeName, (VC->sc->name).c_str(), 32);
   strcpy_s(VC->TargetText, 32, str);
-  VC->ModMsgPut("STR", VC->TargetText, VC->v);
+  VC->mm.Put("STR", VC->TargetText);
 	return true;
 }
