@@ -10,19 +10,14 @@
 //
 // ==============================================================
 
-#include "MMExt2_Client.hpp"
-
 #include "MMTest1_Cores.hpp"
 #include "ParseFunctions.h"
 #include <stdio.h>
 #include <math.h>
 
-MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) {
+MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) : mm("MMTest1"), mma("MMTest1") {
 	GC = gcin;
 	v = vin;
-
-  mm.Init("MMTest1");
-  mma.Init("MMTest1");
   
   TestIntL = 111;
 	TestDblL = 111.111;
@@ -36,6 +31,7 @@ MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) {
 	mm.Put("D", TestDblL);
 	mm.Put("V", TestVecL);
   mm.Put("STR", TargetText);
+  mm.Put("STRL", "Literal");
 
 	TestIntR = 0;
 	TestDblR = 0;

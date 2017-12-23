@@ -16,7 +16,9 @@
 #include "MFDPersist.hpp"
 #include <list>
 #include <string>
-#include "MMExt2_Client.hpp"
+#include <new>
+#include "MMExt2_Basic.hpp"
+#include "MMExt2_Advanced.hpp"
 using namespace std;
 
 #ifndef _MMTest1_CORE_CLASSES

@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="MMExt_Headers">
+      <UniqueIdentifier>{2a149912-9325-4032-8172-632ba4bba78b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFDPersist.cpp">
@@ -67,6 +70,18 @@
     </ClInclude>
     <ClInclude Include="ParseFunctions.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MMExt2_Advanced.hpp">
+      <Filter>MMExt_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MMExt2_Basic.hpp">
+      <Filter>MMExt_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MMExt2\__MMExt2_MMStruct.hpp">
+      <Filter>MMExt_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MMExt2\__MMExt2_Internal.hpp">
+      <Filter>MMExt_Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

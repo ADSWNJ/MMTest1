@@ -88,6 +88,19 @@ void MMTest1::Button_GIR() {
   };
 #pragma pack(pop)
 
+  ret = VC->mm.Put("S", "1");
+  ret = VC->mm.Get("MMTest1", "S", &s);
+  ret = VC->mm.Put("S", "123");
+  ret = VC->mm.Get("MMTest1", "S", &s);
+  ret = VC->mm.Put("S", "1234");
+  ret = VC->mm.Get("MMTest1", "S", &s);
+  ret = VC->mm.Put("S", "12345");
+  ret = VC->mm.Get("MMTest1", "S", &s);
+  ret = VC->mm.Put("S", "1234567890");
+  ret = VC->mm.Get("MMTest1", "S", &s);
+
+
+
 
   MyStruct ss1;
   strcpy(ss1.MyMsg, "Hello world!");
@@ -97,7 +110,7 @@ void MMTest1::Button_GIR() {
   ret = VC->mma.PutMMStruct("SS1", &ss1);
   ret = VC->mma.GetMMStruct("MMTest1", "SS1", &ssRet, 1, sizeof(MyStruct));
 
-  /*
+
   bool b;
   double d;
   strcpy(ss1.MyMsg, "Changed??");
@@ -112,13 +125,13 @@ void MMTest1::Button_GIR() {
   ret = VC->mm.Put("M4", m4);
 
 
-  ret = VC->mm.Get("I", &i);
-  ret = VC->mm.Get("B", &b);
-  ret = VC->mm.Get("D", &d);
-  ret = VC->mm.Get("V", &v);
-  ret = VC->mm.Get("S", &s);
-  ret = VC->mm.Get("M3", &m3);
-  ret = VC->mm.Get("M4", &m4);
+  ret = VC->mm.Get("MMTest1", "I", &i);
+  ret = VC->mm.Get("MMTest1", "B", &b);
+  ret = VC->mm.Get("MMTest1", "D", &d);
+  ret = VC->mm.Get("MMTest1", "V", &v);
+  ret = VC->mm.Get("MMTest1", "S", &s);
+  ret = VC->mm.Get("MMTest1", "M3", &m3);
+  ret = VC->mm.Get("MMTest1", "M4", &m4);
 
 
   i = 0;
@@ -127,46 +140,46 @@ void MMTest1::Button_GIR() {
   v = _V(1, 2, 3);
   ret = VC->mma.Put("I", i);
   ret = VC->mma.Put("I", 95);
-  ret = VC->mma.Get("I", &i);
+  ret = VC->mma.Get("MMTest1", "I", &i);
   ret = VC->mma.Delete("I");
-  ret = VC->mma.Get("I", &i);
+  ret = VC->mma.Get("MMTest1", "I", &i);
 
   ret = VC->mma.Put("B", b);
   ret = VC->mma.Put("B", false);
-  ret = VC->mma.Get("B", &b);
+  ret = VC->mma.Get("MMTest1", "B", &b);
   ret = VC->mma.Delete("B");
-  ret = VC->mma.Get("B", &b);
+  ret = VC->mma.Get("MMTest1", "B", &b);
 
   ret = VC->mma.Put("D", d);
   ret = VC->mma.Put("D", 987.6);
-  ret = VC->mma.Get("D", &d);
+  ret = VC->mma.Get("MMTest1", "D", &d);
   ret = VC->mma.Delete("D");
-  ret = VC->mma.Get("D", &d);
+  ret = VC->mma.Get("MMTest1", "D", &d);
 
   ret = VC->mma.Put("V", v);
   ret = VC->mma.Put("V", _V(9, 8, 7));
-  ret = VC->mma.Get("V", &v);
+  ret = VC->mma.Get("MMTest1", "V", &v);
   ret = VC->mma.Delete("V");
-  ret = VC->mma.Get("V", &v);
+  ret = VC->mma.Get("MMTest1", "V", &v);
 
   ret = VC->mma.Put("S", s);
   ret = VC->mma.Put("S", "Hello");
-  ret = VC->mma.Get("S", &s);
+  ret = VC->mma.Get("MMTest1", "S", &s);
   ret = VC->mma.Delete("S");
-  ret = VC->mma.Get("S", &s);
+  ret = VC->mma.Get("MMTest1", "S", &s);
 
   ret = VC->mma.Put("M3", m3);
   ret = VC->mma.Put("M3", _M(1, 1, 1, 1, 1, 1, 1, 1, 1));
-  ret = VC->mma.Get("M3", &m3);
+  ret = VC->mma.Get("MMTest1", "M3", &m3);
   ret = VC->mma.Delete("M3");
-  ret = VC->mma.Get("M3", &m3);
+  ret = VC->mma.Get("MMTest1", "M3", &m3);
 
   ret = VC->mma.Put("M4", m4);
   ret = VC->mma.Put("M4", _M(8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8));
-  ret = VC->mma.Get("M4", &m4);
+  ret = VC->mma.Get("MMTest1", "M4", &m4);
   ret = VC->mma.Delete("M4");
-  ret = VC->mma.Get("M4", &m4);
-*/
+  ret = VC->mma.Get("MMTest1", "M4", &m4);
+
 
 	if (VC->mm.Get("MMTest2","I", &i)) {
 		VC->TestIntR = i;
