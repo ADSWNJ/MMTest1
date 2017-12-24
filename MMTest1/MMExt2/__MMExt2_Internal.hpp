@@ -37,29 +37,32 @@ namespace MMExt2
   typedef bool(*FUNC_MMEXT2_GET_MX4) (const char* gmod, const char* mod, const char* var, MATRIX4* val,             const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_CST) (const char* gmod, const char* mod, const char* var, char *val, size_t *len,   const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_MMS) (const char* gmod, const char* mod, const char* var, const MMStruct** val,     const char* ves);
+  typedef bool(*FUNC_MMEXT2_FIND)    (const char* gmod, const char* fmod, const char* fvar, const char* fves, bool skp,
+                                      int* ix, char *typ, char *mod, size_t *lmod, char *var, size_t *lvar, char *ves, size_t *lves);
 
   class Internal {
   public:
     Internal(const char *mod);
     ~Internal();
     bool IsInit() const {return m_initialized;};
-    bool _Put(const char* var, const int &val,                          const VESSEL* ves = NULL) const   {return ((m_fPI) && ((*m_fPI)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
-    bool _Put(const char* var, const bool &val,                         const VESSEL* ves = NULL) const   {return ((m_fPB) && ((*m_fPB)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
-    bool _Put(const char* var, const double &val,                       const VESSEL* ves = NULL) const   {return ((m_fPD) && ((*m_fPD)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
-    bool _Put(const char* var, const VECTOR3 &val,                      const VESSEL* ves = NULL) const   {return ((m_fPV) && ((*m_fPV)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
-    bool _Put(const char* var, const MATRIX3 &val,                      const VESSEL* ves = NULL) const   {return ((m_fP3) && ((*m_fP3)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
-    bool _Put(const char* var, const MATRIX4 &val,                      const VESSEL* ves = NULL) const   {return ((m_fP4) && ((*m_fP4)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
-    bool _Put(const char* var, const MMStruct* val,                     const VESSEL* ves = NULL) const   {return ((m_fPX) && ((*m_fPX)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
-    bool _Put(const char* var, const std::string &val,                  const VESSEL* ves = NULL) const   {return ((m_fPS) && ((*m_fPS)(m_mod, var, val.c_str(), (ves?ves->GetName():m_vn))));}
-    bool _Del(const char* var,                                          const VESSEL* ves = NULL) const   {return ((m_fDA) && ((*m_fDA)(m_mod, var,              (ves?ves->GetName():m_vn))));}
-    bool _Get(const char* mod, const char* var, int* val,               const VESSEL* ves = NULL) const   {return ((m_fGI) && ((*m_fGI)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
-    bool _Get(const char* mod, const char* var, bool* val,              const VESSEL* ves = NULL) const   {return ((m_fGB) && ((*m_fGB)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
-    bool _Get(const char* mod, const char* var, double* val,            const VESSEL* ves = NULL) const   {return ((m_fGD) && ((*m_fGD)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
-    bool _Get(const char* mod, const char* var, VECTOR3* val,           const VESSEL* ves = NULL) const   {return ((m_fGV) && ((*m_fGV)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
-    bool _Get(const char* mod, const char* var, MATRIX3* val,           const VESSEL* ves = NULL) const   {return ((m_fG3) && ((*m_fG3)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
-    bool _Get(const char* mod, const char* var, MATRIX4* val,           const VESSEL* ves = NULL) const   {return ((m_fG4) && ((*m_fG4)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
-    bool _Get(const char* mod, const char* var, const MMStruct** val,   const VESSEL* ves = NULL) const   {return ((m_fGX) && ((*m_fGX)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
-    bool _Get(const char* mod, const char* var, std::string* val,       const VESSEL* ves = NULL) const;
+    bool _Put( const char* var, const int &val,                          const VESSEL* ves = NULL) const   {return ((m_fPI) && ((*m_fPI)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
+    bool _Put( const char* var, const bool &val,                         const VESSEL* ves = NULL) const   {return ((m_fPB) && ((*m_fPB)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
+    bool _Put( const char* var, const double &val,                       const VESSEL* ves = NULL) const   {return ((m_fPD) && ((*m_fPD)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
+    bool _Put( const char* var, const VECTOR3 &val,                      const VESSEL* ves = NULL) const   {return ((m_fPV) && ((*m_fPV)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
+    bool _Put( const char* var, const MATRIX3 &val,                      const VESSEL* ves = NULL) const   {return ((m_fP3) && ((*m_fP3)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
+    bool _Put( const char* var, const MATRIX4 &val,                      const VESSEL* ves = NULL) const   {return ((m_fP4) && ((*m_fP4)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
+    bool _Put( const char* var, const MMStruct* val,                     const VESSEL* ves = NULL) const   {return ((m_fPX) && ((*m_fPX)(m_mod, var, val,         (ves?ves->GetName():m_vn))));}
+    bool _Put( const char* var, const std::string &val,                  const VESSEL* ves = NULL) const   {return ((m_fPS) && ((*m_fPS)(m_mod, var, val.c_str(), (ves?ves->GetName():m_vn))));}
+    bool _Del( const char* var,                                          const VESSEL* ves = NULL) const   {return ((m_fDA) && ((*m_fDA)(m_mod, var,              (ves?ves->GetName():m_vn))));}
+    bool _Get( const char* mod, const char* var, int* val,               const VESSEL* ves = NULL) const   {return ((m_fGI) && ((*m_fGI)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
+    bool _Get( const char* mod, const char* var, bool* val,              const VESSEL* ves = NULL) const   {return ((m_fGB) && ((*m_fGB)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
+    bool _Get( const char* mod, const char* var, double* val,            const VESSEL* ves = NULL) const   {return ((m_fGD) && ((*m_fGD)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
+    bool _Get( const char* mod, const char* var, VECTOR3* val,           const VESSEL* ves = NULL) const   {return ((m_fGV) && ((*m_fGV)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
+    bool _Get( const char* mod, const char* var, MATRIX3* val,           const VESSEL* ves = NULL) const   {return ((m_fG3) && ((*m_fG3)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
+    bool _Get( const char* mod, const char* var, MATRIX4* val,           const VESSEL* ves = NULL) const   {return ((m_fG4) && ((*m_fG4)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
+    bool _Get( const char* mod, const char* var, const MMStruct** val,   const VESSEL* ves = NULL) const   {return ((m_fGX) && ((*m_fGX)(m_mod, mod, var, val,    (ves?ves->GetName():m_vn))));}
+    bool _Get( const char* mod, const char* var, std::string* val,       const VESSEL* ves = NULL) const;
+    bool _Find(const char* fMod, const char* fVar, int *ix, char *typ, string* mod, string* var, VESSEL** ves, bool skipSelf = true, const VESSEL* fVes = NULL);
   private:
     FUNC_MMEXT2_PUT_INT m_fPI;
     FUNC_MMEXT2_PUT_BOO m_fPB;
@@ -78,7 +81,8 @@ namespace MMExt2
     FUNC_MMEXT2_GET_CST m_fGS;
     FUNC_MMEXT2_GET_MMS m_fGX;
     FUNC_MMEXT2_DEL_ANY m_fDA;
-    bool m_initialized; 
+    FUNC_MMEXT2_FIND    m_fFA;
+    bool m_initialized;
     HMODULE m_hDLL;
     char* m_vn;
     char* m_mod;
@@ -89,11 +93,11 @@ namespace MMExt2
   // Compiler and linker will determine best way to combine the compilation units
   inline bool Internal::_Get(const char* mod, const char* var, std::string* val, const VESSEL* ves) const {
     if (!m_fGS) return false;
-    const size_t max_simple_len = 64;
-    size_t csl = max_simple_len;
-    char buf[max_simple_len];
+    const size_t mxln = 64;
+    size_t csl = mxln;
+    char buf[mxln];
     if (!(*m_fGS)(m_mod, mod, var, &buf[0], &csl, (ves ? ves->GetName() : m_vn))) return false;
-    if (csl <= max_simple_len) {
+    if (csl <= mxln) {
       *val = buf;
       return true;
     }
@@ -104,6 +108,56 @@ namespace MMExt2
     free(p1);
     return true;
   };
+
+
+  inline bool Internal::_Find(const char* fMod, const char* fVar, int *ix, char *typ, string* mod, string* var, VESSEL** ves, bool skipSelf, const VESSEL* fVes) {
+    if (!m_fFA) return false;
+    const size_t mxln = 64;
+    size_t lmod = mxln, lvar = mxln, lves = mxln;
+    bool needBig;
+    bool repeat;
+    char bmod[mxln], bvar[mxln], bves[mxln];
+    char *pmod, *pvar, *pves;
+    OBJHANDLE ov;
+
+    do {
+      needBig = false;
+      pmod = &bmod[0]; pvar = &bvar[0]; pves = &bves[0];
+
+      if (!(*m_fFA)(m_mod, fMod, fVar, (fVes ? fVes->GetName() : NULL), skipSelf, ix, typ, pmod, &lmod, pvar, &lvar, pves, &lves)) return false;
+      if (lmod > mxln || lvar > mxln || lves > mxln) {
+        needBig = true;
+        pmod = static_cast<char *>(malloc(lmod));
+        pvar = static_cast<char *>(malloc(lvar));
+        pves = static_cast<char *>(malloc(lves));
+        if (!(*m_fFA)(m_mod, fMod, fVar, (fVes ? fVes->GetName() : NULL), skipSelf, ix, typ, pmod, &lmod, pvar, &lvar, pves, &lves)) {
+          free(pmod); free(pvar); free(pves);
+          return false;
+        };
+      }
+
+      ov = oapiGetVesselByName(pves);
+      if (!ov) {
+        if (needBig) {
+          free(pmod); free(pvar); free(pves);
+        }
+        (*ix)++;
+        repeat = true;
+      } else {
+        repeat = false;
+      }
+    } while (repeat);
+
+    *mod = pmod;
+    *var = pvar;
+    *ves = oapiGetVesselInterface(ov);
+    if (needBig) {
+      free(pmod); free(pvar); free(pves);
+    }
+    (*ix)++;
+    return true;
+  }
+
 
   inline Internal::Internal(const char *mod) {
     if (m_initialized) return;
@@ -130,6 +184,7 @@ namespace MMExt2
     m_fGS = (FUNC_MMEXT2_GET_CST)GetProcAddress(m_hDLL, "ModMsgGet_c_str_v1");
     m_fGX = (FUNC_MMEXT2_GET_MMS)GetProcAddress(m_hDLL, "ModMsgGet_MMStruct_v1");
     m_fDA = (FUNC_MMEXT2_DEL_ANY)GetProcAddress(m_hDLL, "ModMsgDel_any_v1");
+    m_fFA = (FUNC_MMEXT2_FIND)   GetProcAddress(m_hDLL, "ModMsgFind_v1");
   };
   inline Internal::~Internal() {
     if (m_hDLL) FreeLibrary(m_hDLL);

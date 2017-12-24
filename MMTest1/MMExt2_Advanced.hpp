@@ -45,7 +45,9 @@ namespace MMExt2
     template<typename T> bool Get(const char* mod, const char* var, T* val, const VESSEL* ves = _MYV) const   {return m_i._Get(mod, var, val, ves);}
     bool Delete(const char* var, const VESSEL* ves = _MYV) const                                              {return m_i._Del(var, ves);}
     template<typename T> bool PutMMStruct(const char* var, const T val, const VESSEL* ves = _MYV) const;
-    template<typename T> bool GetMMStruct(const char* mod, const char* var, T* val, const unsigned int ver, const unsigned int siz, const VESSEL* ves = _MYV) const;    
+    template<typename T> bool GetMMStruct(const char* mod, const char* var, T* val, const unsigned int ver, const unsigned int siz, const VESSEL* ves = _MYV) const;
+    bool Find(const char* fMod, const char* fVar, int *ix,
+              char *typ, string* mod, string* var, VESSEL** ves, bool skipSelf, const VESSEL* fVes)           {return m_i._Find(fMod, fVar, ix, typ, mod, var, ves, skipSelf, fVes);}
   private:
     Internal m_i;
   };

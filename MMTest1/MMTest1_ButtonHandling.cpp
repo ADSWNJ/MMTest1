@@ -133,6 +133,18 @@ void MMTest1::Button_GIR() {
   ret = VC->mm.Get("MMTest1", "M3", &m3);
   ret = VC->mm.Get("MMTest1", "M4", &m4);
 
+  int ix = 0;
+  string mod;
+  string var;
+  VESSEL *ves;
+  char typ;
+  string lookup;
+  bool skipSelf = false;
+  char *vesName;
+  while (VC->mma.Find("*","*",&ix,&typ,&mod,&var, &ves, skipSelf, NULL)) {
+    vesName = ves->GetName();
+    lookup = string() + "Vessel: " + vesName + "  Module: " + mod + "  Var: " + var + "  Type: " + typ;
+  }
 
   i = 0;
   b = true;
