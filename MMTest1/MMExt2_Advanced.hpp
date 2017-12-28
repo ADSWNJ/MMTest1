@@ -40,14 +40,20 @@ namespace MMExt2
   class Advanced {
   public:
     Advanced(const char *mod) : m_i(mod) {};
-    bool Put(const char* var, const char *val, const VESSEL* ves = _MYV) const                                {return m_i._Put(var, std::string(val), ves);}
-    template<typename T> bool Put(const char* var, const T& val, const VESSEL* ves = _MYV) const              {return m_i._Put(var, val, ves);}
-    template<typename T> bool Get(const char* mod, const char* var, T* val, const VESSEL* ves = _MYV) const   {return m_i._Get(mod, var, val, ves);}
-    bool Delete(const char* var, const VESSEL* ves = _MYV) const                                              {return m_i._Del(var, ves);}
+    template<typename T> bool Get(const char* mod, const char* var, T* val, const VESSEL* ves = _MYV) const       {return m_i._Get(mod, var, val, ves);}
+    bool Delete(const char* var, const VESSEL* ves = _MYV) const                                                  {return m_i._Del(var, ves);}
+    bool Put(const char* var, const char *val, const VESSEL* ves = _MYV) const                                    {return m_i._Put(var, std::string(val), ves);}
+    template<typename T> bool Put(const char* var, const T& val, const VESSEL* ves = _MYV) const                  {return m_i._Put(var, val, ves);}
+
     template<typename T> bool PutMMStruct(const char* var, const T val, const VESSEL* ves = _MYV) const;
-    template<typename T> bool GetMMStruct(const char* mod, const char* var, T* val, const unsigned int ver, const unsigned int siz, const VESSEL* ves = _MYV) const;
+    template<typename T> bool GetMMStruct(const char* mod, const char* var, T* val, const unsigned int ver,
+                                          const unsigned int siz, const VESSEL* ves = _MYV) const;
+
+    bool GetLog(const int ix, char *rfunc, bool *rsucc, string *rcli, string *rmod, string *rvar, string *rves)   {return m_i._GetLog(ix, rfunc, rsucc, rcli, rmod, rvar, rves);}
+    bool GetVersion(string* ver) const { return m_i._GetVer(ver); }
     bool Find(const char* fMod, const char* fVar, int *ix,
-              char *typ, string* mod, string* var, VESSEL** ves, bool skipSelf, const VESSEL* fVes)           {return m_i._Find(fMod, fVar, ix, typ, mod, var, ves, skipSelf, fVes);}
+              char *typ, string* mod, string* var, VESSEL** ves, bool skipSelf, const VESSEL* fVes)               {return m_i._Find(fMod, fVar, ix, typ, mod, var, ves, skipSelf, fVes);}
+    void UpdMod(const char* mod)                                                                                  {return m_i._UpdMod(mod);}
   private:
     Internal m_i;
   };

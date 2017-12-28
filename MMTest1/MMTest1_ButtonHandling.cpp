@@ -146,6 +146,13 @@ void MMTest1::Button_GIR() {
     lookup = string() + "Vessel: " + vesName + "  Module: " + mod + "  Var: " + var + "  Type: " + typ;
   }
 
+  ix = 0;
+  string rcli, rmod, rvar, rves, act;
+  char rfunc;
+  bool rsucc; 
+  while (VC->mma.GetLog(ix++, &rfunc, &rsucc, &rcli, &rmod, &rvar, &rves)) {
+      act = rcli + " " + rfunc + " " + rves + ":" + rmod + ":" + rvar + "=" + (rsucc ? "S" : "F");
+  }
   i = 0;
   b = true;
   d = 1.1;

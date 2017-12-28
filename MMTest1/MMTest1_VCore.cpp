@@ -27,11 +27,16 @@ MMTest1_VCore::MMTest1_VCore(VESSEL *vin, MMTest1_GCore* gcin) : mm("MMTest1"), 
 	sc = new MMTest_Common;
 	sc->name = "TEST NAME X1";
 
+    string ver;
+    mma.GetVersion(&ver);
+
 	mm.Put("I", TestIntL);
 	mm.Put("D", TestDblL);
 	mm.Put("V", TestVecL);
-  mm.Put("STR", TargetText);
-  mm.Put("STRL", "Literal");
+    mm.Put("STR", TargetText);
+    mm.Put("STRL", "Literal");
+    mm.Put("StrA", "A text");
+    mm.Put("StrB", "A very long version of B text");
 
 	TestIntR = 0;
 	TestDblR = 0;

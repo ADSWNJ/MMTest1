@@ -5,11 +5,12 @@
 // Copyright  (C) 2014-2017 Szymon "Enjo" Ender and Andrew "ADSWNJ" Stokes
 //                         All rights reserved
 //
-// See MMExt2_Basic.hpp for license and usage information. 
+// See MMExt2_Advanced.hpp for license and usage information. 
 // This is an internal implementation file. Do not include this directly
-// in your code. 
+// in your code. To use, refer to the documentation in the Orbitersdk\Doc
+// folder. 
 // =======================================================================
-
+#pragma once
 #ifndef MMExt2_MMStruct_H
 #define MMExt2_MMStruct_H
 namespace MMExt2
