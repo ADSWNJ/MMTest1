@@ -17,6 +17,7 @@
 #include <string>
 #include <exception>
 #include "__MMExt2_MMStruct.hpp"
+#include "EnjoLib\ModuleMessagingExtBase.hpp"
 
 using namespace std;
 namespace MMExt2
@@ -29,7 +30,6 @@ namespace MMExt2
   typedef bool(*FUNC_MMEXT2_PUT_MX3) (const char* mod,                   const char* var, const MATRIX3& val,       const char* ves);
   typedef bool(*FUNC_MMEXT2_PUT_MX4) (const char* mod,                   const char* var, const MATRIX4& val,       const char* ves);
   typedef bool(*FUNC_MMEXT2_PUT_CST) (const char* mod,                   const char* var, const char *val,          const char* ves);
-  typedef bool(*FUNC_MMEXT2_PUT_MMS) (const char* mod,                   const char* var, const MMStruct* val,      const char* ves);
   typedef bool(*FUNC_MMEXT2_DEL_ANY) (const char* mod,  const char* var,                                            const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_INT) (const char* cli,  const char* mod, const char* var, int* val,                 const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_BOO) (const char* cli,  const char* mod, const char* var, bool* val,                const char* ves);
@@ -38,12 +38,16 @@ namespace MMExt2
   typedef bool(*FUNC_MMEXT2_GET_MX3) (const char* cli,  const char* mod, const char* var, MATRIX3* val,             const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_MX4) (const char* cli,  const char* mod, const char* var, MATRIX4* val,             const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_CST) (const char* cli,  const char* mod, const char* var, char* val, size_t *len,   const char* ves);
-  typedef bool(*FUNC_MMEXT2_GET_MMS) (const char* cli,  const char* mod, const char* var, const MMStruct** val,     const char* ves);
   typedef bool(*FUNC_MMEXT2_GET_VER) (const char* mod, char* var, size_t* len);
   typedef bool(*FUNC_MMEXT2_GET_LOG) (const char* cli, const int ix, char* rfunc, bool* rsucc,
                                       char *rcli, size_t *lcli, char *rmod, size_t *lmod, char *rvar, size_t *lvar, char *rves, size_t *lves);
   typedef bool(*FUNC_MMEXT2_FIND)    (const char* cli, const char* fmod, const char* fvar, const char* fves, bool skp,
                                       int* ix, char *typ, char *mod, size_t *lmod, char *var, size_t *lvar, char *ves, size_t *lves);
+
+  typedef bool(*FUNC_MMEXT2_PUT_MMB) (const char* mod, const char* var, const EnjoLib::ModuleMessagingExtBase* val, const char* ves);
+  typedef bool(*FUNC_MMEXT2_PUT_MMS) (const char* mod, const char* var, const MMStruct* val, const char* ves);
+  typedef bool(*FUNC_MMEXT2_GET_MMB) (const char* cli, const char* mod, const char* var, const EnjoLib::ModuleMessagingExtBase** val, const char* ves);
+  typedef bool(*FUNC_MMEXT2_GET_MMS) (const char* cli, const char* mod, const char* var, const MMStruct** val, const char* ves);
 
   class Internal {
   public:
@@ -56,7 +60,6 @@ namespace MMExt2
     bool _Put( const char* var, const VECTOR3 &val,                      const VESSEL* ves = NULL) const   {return ((m_fPV) && ((*m_fPV)(m_mod, var, val,         _GetVes(ves))));}
     bool _Put( const char* var, const MATRIX3 &val,                      const VESSEL* ves = NULL) const   {return ((m_fP3) && ((*m_fP3)(m_mod, var, val,         _GetVes(ves))));}
     bool _Put( const char* var, const MATRIX4 &val,                      const VESSEL* ves = NULL) const   {return ((m_fP4) && ((*m_fP4)(m_mod, var, val,         _GetVes(ves))));}
-    bool _Put( const char* var, const MMStruct* val,                     const VESSEL* ves = NULL) const   {return ((m_fPX) && ((*m_fPX)(m_mod, var, val,         _GetVes(ves))));}
     bool _Put( const char* var, const string &val,                       const VESSEL* ves = NULL) const   {return ((m_fPS) && ((*m_fPS)(m_mod, var, val.c_str(), _GetVes(ves))));}
     bool _Del( const char* var,                                          const VESSEL* ves = NULL) const   {return ((m_fDA) && ((*m_fDA)(m_mod, var,              _GetVes(ves))));}
     bool _Get( const char* mod, const char* var, int* val,               const VESSEL* ves = NULL) const   {return ((m_fGI) && ((*m_fGI)(m_mod, mod, var, val,    _GetVes(ves))));}
@@ -65,12 +68,15 @@ namespace MMExt2
     bool _Get( const char* mod, const char* var, VECTOR3* val,           const VESSEL* ves = NULL) const   {return ((m_fGV) && ((*m_fGV)(m_mod, mod, var, val,    _GetVes(ves))));}
     bool _Get( const char* mod, const char* var, MATRIX3* val,           const VESSEL* ves = NULL) const   {return ((m_fG3) && ((*m_fG3)(m_mod, mod, var, val,    _GetVes(ves))));}
     bool _Get( const char* mod, const char* var, MATRIX4* val,           const VESSEL* ves = NULL) const   {return ((m_fG4) && ((*m_fG4)(m_mod, mod, var, val,    _GetVes(ves))));}
-    bool _Get( const char* mod, const char* var, const MMStruct** val,   const VESSEL* ves = NULL) const   {return ((m_fGX) && ((*m_fGX)(m_mod, mod, var, val,    _GetVes(ves))));}
     bool _Get( const char* mod, const char* var, string* val,            const VESSEL* ves = NULL) const;
     bool _GetVer(string* ver) const;
     bool _GetLog(const int ix, char *rfunc, bool *rsucc, string *rcli, string *rmod, string *rvar, string *rves);
     bool _Find(const char* fMod, const char* fVar, int *ix, char *typ, string* mod, string* var, VESSEL** ves, bool skipSelf = true, const VESSEL* fVes = NULL);
     void _UpdMod(const char *mod);
+    bool _Put(const char* var, const EnjoLib::ModuleMessagingExtBase* val, const VESSEL* ves = NULL) const { return ((m_fPY) && ((*m_fPY)(m_mod, var, val, _GetVes(ves)))); }
+    bool _Put(const char* var, const MMStruct* val, const VESSEL* ves = NULL) const { return ((m_fPX) && ((*m_fPX)(m_mod, var, val, _GetVes(ves)))); }
+    bool _Get(const char* mod, const char* var, const EnjoLib::ModuleMessagingExtBase** val, const VESSEL* ves = NULL) const { return ((m_fGY) && ((*m_fGY)(m_mod, mod, var, val, _GetVes(ves)))); }
+    bool _Get(const char* mod, const char* var, const MMStruct** val, const VESSEL* ves = NULL) const { return ((m_fGX) && ((*m_fGX)(m_mod, mod, var, val, _GetVes(ves)))); }
   private:
     FUNC_MMEXT2_PUT_INT m_fPI;
     FUNC_MMEXT2_PUT_BOO m_fPB;
@@ -79,7 +85,6 @@ namespace MMExt2
     FUNC_MMEXT2_PUT_MX3 m_fP3;
     FUNC_MMEXT2_PUT_MX4 m_fP4;
     FUNC_MMEXT2_PUT_CST m_fPS;
-    FUNC_MMEXT2_PUT_MMS m_fPX;
     FUNC_MMEXT2_GET_INT m_fGI;
     FUNC_MMEXT2_GET_BOO m_fGB;
     FUNC_MMEXT2_GET_DBL m_fGD;
@@ -87,11 +92,14 @@ namespace MMExt2
     FUNC_MMEXT2_GET_MX3 m_fG3;
     FUNC_MMEXT2_GET_MX4 m_fG4;
     FUNC_MMEXT2_GET_CST m_fGS;
-    FUNC_MMEXT2_GET_MMS m_fGX;
     FUNC_MMEXT2_DEL_ANY m_fDA;
     FUNC_MMEXT2_GET_VER m_fVR; 
     FUNC_MMEXT2_GET_LOG m_fGL;
     FUNC_MMEXT2_FIND    m_fFA;
+    FUNC_MMEXT2_PUT_MMB m_fPY;
+    FUNC_MMEXT2_PUT_MMS m_fPX;
+    FUNC_MMEXT2_GET_MMB m_fGY;
+    FUNC_MMEXT2_GET_MMS m_fGX;
     bool m_initialized;
     HMODULE m_hDLL;
     mutable char* m_vn;
@@ -246,7 +254,6 @@ namespace MMExt2
     m_fP3 = (FUNC_MMEXT2_PUT_MX3)GetProcAddress(m_hDLL, "ModMsgPut_MATRIX3_v1");
     m_fP4 = (FUNC_MMEXT2_PUT_MX4)GetProcAddress(m_hDLL, "ModMsgPut_MATRIX4_v1");
     m_fPS = (FUNC_MMEXT2_PUT_CST)GetProcAddress(m_hDLL, "ModMsgPut_c_str_v1");
-    m_fPX = (FUNC_MMEXT2_PUT_MMS)GetProcAddress(m_hDLL, "ModMsgPut_MMStruct_v1");
     m_fGI = (FUNC_MMEXT2_GET_INT)GetProcAddress(m_hDLL, "ModMsgGet_int_v1");
     m_fGB = (FUNC_MMEXT2_GET_BOO)GetProcAddress(m_hDLL, "ModMsgGet_bool_v1");
     m_fGD = (FUNC_MMEXT2_GET_DBL)GetProcAddress(m_hDLL, "ModMsgGet_double_v1");
@@ -254,11 +261,14 @@ namespace MMExt2
     m_fG3 = (FUNC_MMEXT2_GET_MX3)GetProcAddress(m_hDLL, "ModMsgGet_MATRIX3_v1");
     m_fG4 = (FUNC_MMEXT2_GET_MX4)GetProcAddress(m_hDLL, "ModMsgGet_MATRIX4_v1");
     m_fGS = (FUNC_MMEXT2_GET_CST)GetProcAddress(m_hDLL, "ModMsgGet_c_str_v1");
-    m_fGX = (FUNC_MMEXT2_GET_MMS)GetProcAddress(m_hDLL, "ModMsgGet_MMStruct_v1");
     m_fDA = (FUNC_MMEXT2_DEL_ANY)GetProcAddress(m_hDLL, "ModMsgDel_any_v1");
     m_fVR = (FUNC_MMEXT2_GET_VER)GetProcAddress(m_hDLL, "ModMsgGet_ver_v1");
     m_fGL = (FUNC_MMEXT2_GET_LOG)GetProcAddress(m_hDLL, "ModMsgGet_log_v1");
     m_fFA = (FUNC_MMEXT2_FIND)   GetProcAddress(m_hDLL, "ModMsgFind_v1");
+    m_fPY = (FUNC_MMEXT2_PUT_MMB)GetProcAddress(m_hDLL, "ModMsgPut_MMBase_v1");
+    m_fPX = (FUNC_MMEXT2_PUT_MMS)GetProcAddress(m_hDLL, "ModMsgPut_MMStruct_v1");
+    m_fGY = (FUNC_MMEXT2_GET_MMB)GetProcAddress(m_hDLL, "ModMsgGet_MMBase_v1");
+    m_fGX = (FUNC_MMEXT2_GET_MMS)GetProcAddress(m_hDLL, "ModMsgGet_MMStruct_v1");
     m_initialized = true;
   };
 

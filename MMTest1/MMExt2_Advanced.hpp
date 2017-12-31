@@ -49,6 +49,10 @@ namespace MMExt2
     template<typename T> bool GetMMStruct(const char* mod, const char* var, T* val, const unsigned int ver,
                                           const unsigned int siz, const VESSEL* ves = _MYV) const;
 
+    template<typename T> bool PutMMBase(  const char* var, const T val, const VESSEL* ves = _MYV) const;
+    template<typename T> bool GetMMBase(  const char* mod, const char* var, T* val, const unsigned int ver,
+                                          const unsigned int siz, const VESSEL* ves = _MYV) const;
+
     bool GetLog(const int ix, char *rfunc, bool *rsucc, string *rcli, string *rmod, string *rvar, string *rves)   {return m_i._GetLog(ix, rfunc, rsucc, rcli, rmod, rvar, rves);}
     bool GetVersion(string* ver) const { return m_i._GetVer(ver); }
     bool Find(const char* fMod, const char* fVar, int *ix,
@@ -66,6 +70,19 @@ namespace MMExt2
   }
   template<typename T> inline bool Advanced::GetMMStruct(const char* mod, const char* var, T* val, const unsigned int ver, const unsigned int siz, const VESSEL* ves) const {
     const MMStruct *pMMStruct;
+    if (!m_i._Get(mod, var, &pMMStruct, ves)) return false;
+    if (!pMMStruct->IsCorrectSize(siz) || !pMMStruct->IsCorrectVersion(ver)) return false;
+    *val = dynamic_cast<T>(pMMStruct);
+    return (val != NULL);
+  }
+
+  template<typename T> inline bool Advanced::PutMMBase(const char* var, const T val, const VESSEL* ves) const {
+    const EnjoLib::ModuleMessagingExtBase *pSafeStruct = val;
+    return m_i._Put(var, pSafeStruct, ves);
+  }
+
+  template<typename T> inline bool Advanced::GetMMBase(const char* mod, const char* var, T* val, const unsigned int ver, const unsigned int siz, const VESSEL* ves) const {
+    const  EnjoLib::ModuleMessagingExtBase *pMMStruct;
     if (!m_i._Get(mod, var, &pMMStruct, ves)) return false;
     if (!pMMStruct->IsCorrectSize(siz) || !pMMStruct->IsCorrectVersion(ver)) return false;
     *val = dynamic_cast<T>(pMMStruct);
