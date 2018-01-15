@@ -65,6 +65,14 @@ void MMTest1::Button_SVL() {
   return;
 };
 
+inline MATRIX4 _M4(double m11, double m12, double m13, double m14,
+  double m21, double m22, double m23, double m24,
+  double m31, double m32, double m33, double m34, 
+  double m41, double m42, double m43, double m44 )
+{
+  MATRIX4 mat = { m11,m12,m13,m14,  m21,m22,m23,m24,  m31,m32,m33,m34,  m41,m41,m43,m44 };
+  return mat;
+}
 
 // GIR = Get Integer Remote
 void MMTest1::Button_GIR() {
@@ -73,7 +81,7 @@ void MMTest1::Button_GIR() {
 
   VECTOR3 v, v_ref;
   MATRIX3 m3 = _M(1, 2, 3, 4, 5, 6, 7, 8, 9);
-  MATRIX4 m4 = _M(1, 2, 3, 4, 5, 6, 7, 8, 9,10,11, 12, 13, 14, 15, 16);
+  MATRIX4 m4 = _M4(1, 2, 3, 4, 5, 6, 7, 8, 9,10,11, 12, 13, 14, 15, 16);
 
   string s = "ABCDE";
 
@@ -99,6 +107,15 @@ void MMTest1::Button_GIR() {
   ret = VC->mm.Put("S", "1234567890");
   ret = VC->mm.Get("MMTest1", "S", &s);
 
+  OBJHANDLE oh = oapiGetVesselByName("ISS");
+  OBJHANDLE roh;
+  ret = VC->mma.Put("BigAssSpaceStation", oh);
+  ret = VC->mma.Get("MMTest1", "BigAssSpaceStation", &roh);
+  
+  char TextVes[32];
+  sprintf(TextVes, "%p", oh);
+
+  sscanf(TextVes, "%p", &roh);
 
 
 
@@ -136,13 +153,13 @@ void MMTest1::Button_GIR() {
   int ix = 0;
   string mod;
   string var;
-  VESSEL *ves;
+  OBJHANDLE ovh;
   char typ;
   string lookup;
   bool skipSelf = false;
   char *vesName;
-  while (VC->mma.Find("*","*",&ix,&typ,&mod,&var, &ves, skipSelf, NULL)) {
-    vesName = ves->GetName();
+  while (VC->mma.Find(&typ, &mod, &var, &ovh, &ix, "*","*",NULL, skipSelf)) {
+    vesName = oapiGetVesselInterface(ovh)->GetName();
     lookup = string() + "Vessel: " + vesName + "  Module: " + mod + "  Var: " + var + "  Type: " + typ;
   }
 
@@ -150,7 +167,7 @@ void MMTest1::Button_GIR() {
   string rcli, rmod, rvar, rves, act;
   char rfunc;
   bool rsucc; 
-  while (VC->mma.GetLog(ix++, &rfunc, &rsucc, &rcli, &rmod, &rvar, &rves)) {
+  while (VC->mma.GetLog(&rfunc, &rcli, &rmod, &rvar, &rves, &rsucc, &ix, false)) {
       act = rcli + " " + rfunc + " " + rves + ":" + rmod + ":" + rvar + "=" + (rsucc ? "S" : "F");
   }
   i = 0;
@@ -194,7 +211,7 @@ void MMTest1::Button_GIR() {
   ret = VC->mma.Get("MMTest1", "M3", &m3);
 
   ret = VC->mma.Put("M4", m4);
-  ret = VC->mma.Put("M4", _M(8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8));
+  ret = VC->mma.Put("M4", _M4(8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8));
   ret = VC->mma.Get("MMTest1", "M4", &m4);
   ret = VC->mma.Delete("M4");
   ret = VC->mma.Get("MMTest1", "M4", &m4);

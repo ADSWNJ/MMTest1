@@ -84,10 +84,6 @@
   <ItemGroup>
     <ClInclude Include="MFDButtonPage.hpp" />
     <ClInclude Include="MFDPersist.hpp" />
-    <ClInclude Include="MMExt2\__MMExt2_Internal.hpp" />
-    <ClInclude Include="MMExt2\__MMExt2_MMStruct.hpp" />
-    <ClInclude Include="MMExt2_Advanced.hpp" />
-    <ClInclude Include="MMExt2_Basic.hpp" />
     <ClInclude Include="MMTest1.hpp" />
     <ClInclude Include="MMTest1_Buttons.hpp" />
     <ClInclude Include="MMTest1_Cores.hpp" />
