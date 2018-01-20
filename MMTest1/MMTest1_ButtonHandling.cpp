@@ -76,12 +76,52 @@ inline MATRIX4 _M4(double m11, double m12, double m13, double m14,
 
 // GIR = Get Integer Remote
 void MMTest1::Button_GIR() {
+  int i;
+
+	if (VC->mm.Get("MMTest2","I", &i)) {
+		VC->TestIntR = i;
+		VC->goodVar[0] = 1;
+	} else {
+		VC->TestIntR = 0;
+		VC->goodVar[0] = -1;
+	}
+	return;
+};
+
+// GDR = Get Double Remote
+void MMTest1::Button_GDR() {
+	double d;
+	if (VC->mm.Get("MMTest2","D", &d)) {
+		VC->TestDblR = d;
+		VC->goodVar[1] = 1;
+	} else {
+		VC->TestDblR = 0.0;
+		VC->goodVar[1] = -1;
+	}
+  return;
+};
+
+// GVR = Get Vector Remote
+void MMTest1::Button_GVR() {
+	VECTOR3 vec;
+	if (VC->mma.Get("MMTest2","V", &vec, VC->v)) {
+		VC->TestVecR = vec;
+		VC->goodVar[2] = 1;
+	} else {
+		VC->TestVecR = _V(0.0,0.0,0.0);
+		VC->goodVar[2] = -1;
+	}
+  return;
+};
+
+// TST = Test Data Types
+void MMTest1::Button_TST() {
   bool ret;
   int i;
 
   VECTOR3 v, v_ref;
   MATRIX3 m3 = _M(1, 2, 3, 4, 5, 6, 7, 8, 9);
-  MATRIX4 m4 = _M4(1, 2, 3, 4, 5, 6, 7, 8, 9,10,11, 12, 13, 14, 15, 16);
+  MATRIX4 m4 = _M4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
   string s = "ABCDE";
 
@@ -98,20 +138,49 @@ void MMTest1::Button_GIR() {
 
   ret = VC->mm.Put("S", "1");
   ret = VC->mm.Get("MMTest1", "S", &s);
-  ret = VC->mm.Put("S", "123");
-  ret = VC->mm.Get("MMTest1", "S", &s);
+  ret = VC->mma.Put("S", "123");
+  ret = VC->mma.Get("MMTest1", "S", &s);
   ret = VC->mm.Put("S", "1234");
   ret = VC->mm.Get("MMTest1", "S", &s);
-  ret = VC->mm.Put("S", "12345");
-  ret = VC->mm.Get("MMTest1", "S", &s);
+  ret = VC->mma.Put("S", "12345");
+  ret = VC->mma.Get("MMTest1", "S", &s);
   ret = VC->mm.Put("S", "1234567890");
   ret = VC->mm.Get("MMTest1", "S", &s);
 
   OBJHANDLE oh = oapiGetVesselByName("ISS");
   OBJHANDLE roh;
-  ret = VC->mma.Put("BigAssSpaceStation", oh);
-  ret = VC->mma.Get("MMTest1", "BigAssSpaceStation", &roh);
-  
+  int ot;
+  string iss_nickname = "$100B_Lab";
+
+  ret = VC->mma.Put(iss_nickname, oh);
+  ret = VC->mma.Get("MMTest1", iss_nickname, &roh);
+  ot = VC->mma.ObjType(roh);
+
+  oh = oapiGetGbodyByName("Sun");
+  ret = VC->mma.Put("Warm'n'Shiny", oh);
+  ret = VC->mma.Get("MMTest1", "Warm'n'Shiny", &roh);
+  ot = VC->mma.ObjType(roh);
+
+  oh = oapiGetGbodyByName("Earth");
+  ret = VC->mma.Put("Marble", oh);
+  ret = VC->mma.Get("MMTest1", "Marble", &roh);
+  ot = VC->mma.ObjType(roh);
+
+  oh = oapiGetGbodyByName("Moon");
+  ret = VC->mma.Put("Cheese", oh);
+  ret = VC->mma.Get("MMTest1", "Cheese", &roh);
+  ot = VC->mma.ObjType(roh);
+
+  oh = oapiGetBaseByName(roh, "Brighton Beach");
+  ret = VC->mma.Put("RockyBeach", oh);
+  ret = VC->mma.Get("MMTest1", "RockyBeach", &roh);
+  ot = VC->mma.ObjType(roh);
+
+
+  ot = VC->mm.ObjType((OBJHANDLE)((unsigned long)roh + 1));
+  ot = VC->mm.ObjType(0);
+
+
   char TextVes[32];
   sprintf(TextVes, "%p", oh);
 
@@ -158,7 +227,7 @@ void MMTest1::Button_GIR() {
   string lookup;
   bool skipSelf = false;
   char *vesName;
-  while (VC->mma.Find(&typ, &mod, &var, &ovh, &ix, "*","*",NULL, skipSelf)) {
+  while (VC->mma.Find(&typ, &mod, &var, &ovh, &ix, "*", "*", NULL, skipSelf)) {
     vesName = oapiGetVesselInterface(ovh)->GetName();
     lookup = string() + "Vessel: " + vesName + "  Module: " + mod + "  Var: " + var + "  Type: " + typ;
   }
@@ -166,9 +235,9 @@ void MMTest1::Button_GIR() {
   ix = 0;
   string rcli, rmod, rvar, rves, act;
   char rfunc;
-  bool rsucc; 
+  bool rsucc;
   while (VC->mma.GetLog(&rfunc, &rcli, &rmod, &rvar, &rves, &rsucc, &ix, false)) {
-      act = rcli + " " + rfunc + " " + rves + ":" + rmod + ":" + rvar + "=" + (rsucc ? "S" : "F");
+    act = rcli + " " + rfunc + " " + rves + ":" + rmod + ":" + rvar + "=" + (rsucc ? "S" : "F");
   }
   i = 0;
   b = true;
@@ -216,40 +285,6 @@ void MMTest1::Button_GIR() {
   ret = VC->mma.Delete("M4");
   ret = VC->mma.Get("MMTest1", "M4", &m4);
 
-
-	if (VC->mm.Get("MMTest2","I", &i)) {
-		VC->TestIntR = i;
-		VC->goodVar[0] = 1;
-	} else {
-		VC->TestIntR = 0;
-		VC->goodVar[0] = -1;
-	}
-	return;
-};
-
-// GDR = Get Double Remote
-void MMTest1::Button_GDR() {
-	double d;
-	if (VC->mm.Get("MMTest2","D", &d)) {
-		VC->TestDblR = d;
-		VC->goodVar[1] = 1;
-	} else {
-		VC->TestDblR = 0.0;
-		VC->goodVar[1] = -1;
-	}
-  return;
-};
-
-// GVR = Get Vector Remote
-void MMTest1::Button_GVR() {
-	VECTOR3 vec;
-	if (VC->mma.Get("MMTest2","V", &vec, VC->v)) {
-		VC->TestVecR = vec;
-		VC->goodVar[2] = 1;
-	} else {
-		VC->TestVecR = _V(0.0,0.0,0.0);
-		VC->goodVar[2] = -1;
-	}
   return;
 };
 

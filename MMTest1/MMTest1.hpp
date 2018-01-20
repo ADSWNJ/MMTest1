@@ -38,7 +38,7 @@ public:
   void Button_GDR();
   void Button_GVR();
   void Button_SSN();
-
+  void Button_TST();
 
   // Persistence functions
   void ReadStatus(FILEHANDLE scn);
